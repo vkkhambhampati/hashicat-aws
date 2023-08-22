@@ -30,6 +30,12 @@ resource "aws_subnet" "hashicat" {
   }
 }
 
+
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
+
 resource "aws_security_group" "hashicat" {
   name = "${var.prefix}-security-group"
 
@@ -39,7 +45,7 @@ resource "aws_security_group" "hashicat" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
   }
 
 
